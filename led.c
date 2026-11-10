@@ -20,13 +20,28 @@ void led_init(LED_HandleTypeDef *hled)
 
 void led_on(LED_HandleTypeDef *hled)
 {
-    // next we need to set the value HIGH to the GPIO_ODR of the pin
-    // since we are using external LED, not the PC13 one, the value 1 is HIGH (3.3V) and 0 is LOW (0V)
+    // special case: PC13, active low - driving the pin low turns it on
+    if ((hled->pin == 13) && (hled->rcc_bit == 2))
+    {
+        *hled->odr_reg &= ~(1 << hled->pin);
+    }
+    else
+    {
+        // next we need to set the value HIGH to the GPIO_ODR of the pin
+        // since we are using external LED, not the PC13 one, the value 1 is HIGH (3.3V) and 0 is LOW (0V)
 
-    *hled->odr_reg |= (1 << hled->pin);
+        *hled->odr_reg |= (1 << hled->pin);
+    }
 }
 
 void led_off(LED_HandleTypeDef *hled)
 {
-    *hled->odr_reg &= ~(1 << hled->pin); // we want to keep all existing bits and clear the bit PIN, so AND with NOT (~)
+    if ((hled->pin == 13) && (hled->rcc_bit == 2))
+    {
+        *hled->odr_reg |= (1 << hled->pin);
+    }
+    else
+    {
+        *hled->odr_reg &= ~(1 << hled->pin); // we want to keep all existing bits and clear the bit PIN, so AND with NOT (~)
+    }
 }
