@@ -8,6 +8,7 @@ typedef struct
 {
     volatile uint32_t *moder_reg;   // pointer to the GPIO MODER register
     volatile uint32_t *odr_reg;     // pointer to the GPIO ODR register
+    volatile uint32_t *bsrr_reg;    // pointer to the GPIO BSRR register (write-only register, so use assignment (=), not RMW (|=))
     volatile uint32_t *rcc_clk_reg; // pointer to the clock register
     uint8_t pin;                    // pin number (from 0 to 15)
     uint8_t rcc_bit;                // bit position in RCC_AHB1ENR to enable the clock
@@ -16,5 +17,7 @@ typedef struct
 void led_init(LED_HandleTypeDef *hled);
 void led_on(LED_HandleTypeDef *hled);
 void led_off(LED_HandleTypeDef *hled);
+void led_on_bsrr(LED_HandleTypeDef *hled);
+void led_off_bsrr(LED_HandleTypeDef *hled);
 
 #endif
